@@ -1,0 +1,3 @@
+export const supaUrl = "https://uccxipxfpkfcmymuxzrf.supabase.co";
+export const supaAnonKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjY3hpcHhmcGtmY215bXV4enJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNjk3NzQsImV4cCI6MjA4NTc0NTc3NH0.UE7N6IMnNZqd__SRC0nxMj42rYIoRubhYqrN2R8Ek4s";
