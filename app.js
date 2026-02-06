@@ -66,10 +66,13 @@ logoutButton.addEventListener("click", () => {
 // init
 
 checkUserOnStartUp();
+
 let myThingsSubscription;
 const myThings = {};
 const allThings = {};
+
 getAllIntialThings().then(() => listenToAllThings());
+initAllThings(); // this will fetch first, render, then subscribe
 
 supaClient.auth.onAuthStateChange((_event, session) => {
   if (session?.user) {
@@ -80,6 +83,14 @@ supaClient.auth.onAuthStateChange((_event, session) => {
 });
 
 // function declarartions
+
+async function initAllThings() {
+  const { data } = await supaClient.from("things").select();
+  data.forEach((thing) => (allThings[thing.id] = thing));
+  renderAllThings();
+
+  listenToAllThings(); // subscribe AFTER fetching initial data
+}
 
 async function checkUserOnStartUp() {
   const {
