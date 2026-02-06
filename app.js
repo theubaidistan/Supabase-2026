@@ -1,5 +1,5 @@
 // intializing Supbase Client
-import { supaUrl, supaAnonKey } from "./config.js";
+import { supaUrl, supaAnonKey } from "./config/config";
 const { createClient } = supabase;
 
 const supaClient = createClient(supaUrl, supaAnonKey);
