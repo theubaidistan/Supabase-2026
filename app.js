@@ -333,6 +333,13 @@ function deleteButtonTemplate(thing) {
 }
 
 async function deleteAtId(id) {
+  // optimistic UI remove
+  delete myThings[id];
+  delete allThings[id];
+  renderMyThings();
+  renderAllThings();
+
+  // actual DB delete
   await supaClient.from("things").delete().eq("id", id);
 }
 
