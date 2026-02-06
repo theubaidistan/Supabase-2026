@@ -63,7 +63,8 @@ logoutButton.addEventListener("click", () => {
   supaClient.auth.signOut();
 });
 
-// init
+//* Init
+
 initAllThings(); // this will fetch first, render, then subscribe
 
 checkUserOnStartUp();
@@ -74,6 +75,9 @@ const allThings = {};
 
 getAllIntialThings().then(() => listenToAllThings());
 
+await fetchAllThings(); // fetch current state
+subscribeAllThings(); // listen for future changes
+
 supaClient.auth.onAuthStateChange((_event, session) => {
   if (session?.user) {
     adjustForUser(session.user);
@@ -83,6 +87,43 @@ supaClient.auth.onAuthStateChange((_event, session) => {
 });
 
 //* Function Declarartions
+
+async function fetchAllThings() {
+  const { data } = await supaClient.from("things").select();
+  data.forEach((thing) => (allThings[thing.id] = thing));
+  renderAllThings();
+}
+
+function subscribeAllThings() {
+  supaClient
+    .channel("public:things")
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "things" },
+      (payload) => {
+        allThings[payload.new.id] = payload.new;
+        renderAllThings();
+      }
+    )
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "things" },
+      (payload) => {
+        allThings[payload.new.id] = payload.new;
+        renderAllThings();
+      }
+    )
+    .on(
+      "postgres_changes",
+      { event: "DELETE", schema: "public", table: "things" },
+      (payload) => {
+        delete allThings[payload.old.id];
+        renderAllThings();
+      }
+    )
+    .subscribe();
+}
+
 // Fetch initial data AND subscribe to real-time updates
 async function initAllThings() {
   // const { data } = await supaClient.from("things").select();
