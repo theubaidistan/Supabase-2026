@@ -196,17 +196,59 @@ async function listenToMyThingsChanges(user) {
   if (myThingsSubscription) {
     return;
   }
+  // myThingsSubscription = supaClient
+  //   .channel(`public:things:owner=eq.${user.id}`)
+  //   .on(
+  //     "postgres_changes",
+  //     {
+  //       event: "*",
+  //       schema: "public",
+  //       table: "things",
+  //       filter: `owner=eq.${user.id}`,
+  //     },
+  //     handleMyThingsUpdate
+  //   )
+  //   .subscribe();
   myThingsSubscription = supaClient
     .channel(`public:things:owner=eq.${user.id}`)
     .on(
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT", // listen for new rows
         schema: "public",
         table: "things",
         filter: `owner=eq.${user.id}`,
       },
-      handleMyThingsUpdate
+      (payload) => {
+        myThings[payload.new.id] = payload.new;
+        renderMyThings();
+      }
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "things",
+        filter: `owner=eq.${user.id}`,
+      },
+      (payload) => {
+        myThings[payload.new.id] = payload.new;
+        renderMyThings();
+      }
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "DELETE",
+        schema: "public",
+        table: "things",
+        filter: `owner=eq.${user.id}`,
+      },
+      (payload) => {
+        delete myThings[payload.old.id];
+        renderMyThings();
+      }
     )
     .subscribe();
 }
