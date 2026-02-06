@@ -1,10 +1,8 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Supaship</title>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script type="module" src="app.js" defer></script>
@@ -16,7 +14,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
   <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
-  <style>
+  <!-- <style>
     body {
       margin: auto;
       max-width: 800px;
@@ -29,7 +27,81 @@
     td {
       vertical-align: middle;
     }
+  </style> -->
+  <style>
+    body {
+      margin: auto;
+      max-width: 900px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
+      color: #343a40;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 3rem;
+      font-weight: 700;
+      color: #0d6efd;
+    }
+
+    section {
+      margin-bottom: 4rem;
+      padding: 2rem;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    #userDetails {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    #userDetails img {
+      border-radius: 50%;
+      height: 60px;
+      width: 60px;
+      object-fit: cover;
+    }
+
+    table {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(odd) {
+      background-color: #f1f3f5;
+    }
+
+    button {
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-outline-danger svg {
+      vertical-align: middle;
+    }
+
+    .thing-card {
+      margin-bottom: 1rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+    }
   </style>
+
 </head>
 
 <body>
@@ -41,36 +113,12 @@
     </button>
   </section>
 
+
   <section id="whenSignedIn" hidden="true">
     <div id="userDetails"></div>
-    <button id="signOutBtn" class="btn btn-primary">Sign Out</button>
-    <div id="askForEmail" hidden="true" class="m-5">
-      <form id="askForEmailForm">
-        <h2>Would you like to sign up for emails?</h2>
-        <div class="form-group">
-          <label for="emailInput" class="m-2">Your Email:</label>
-          <input id="emailInput" type="email" class="form-control m-2" placeholder="Email" />
-        </div>
-        <button type="submit" class="btn btn-primary m-2">Submit</button>
-      </form>
-    </div>
-
-    <div id="emailConfirmation" hidden="true">
-      <h2>You're signed up for emails!</h2>
-      <button id="cancelEmailBtn" class="btn btn-primary m-2">
-        Cancel Email
-      </button>
-    </div>
-
-    <div id="adminSendEmails" hidden="true">
-      <h2>Super Secret Admin Email Sender</h2>
-      <form id="adminEmailSender">
-        <input id="subjectInput" type="text" placeholder="Subject" class="form-control m-2" />
-        <textarea id="emailContents" class="form-control m-2"></textarea>
-        <button type="submit" class="btn btn-primary m-2">
-          Send Email
-      </form>
-    </div>
+    <button id="signOutBtn" class="btn btn-primary">
+      Sign Out
+    </button>
   </section>
 
   <section id="myThings" hidden="true">
@@ -84,6 +132,7 @@
     <h2>All Things</h2>
     <div id="allThingsList"></div>
   </section>
+
 </body>
 
 </html>
