@@ -90,7 +90,7 @@ supaClient.auth.onAuthStateChange((_event, session) => {
 
 async function fetchAllThings() {
   const { data } = await supaClient.from("things").select();
-  allThings = {}; // clear old data
+  // allThings = {}; // clear old data
   data.forEach((thing) => (allThings[thing.id] = thing));
   renderAllThings();
 }
