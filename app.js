@@ -245,6 +245,9 @@ async function deleteAtId(id) {
   await supaClient.from("things").delete().eq("id", id);
 }
 
+// 👇 Add this right after the function
+window.deleteAtId = deleteAtId;
+
 const trashIcon = `
 <svg xmlns="http://www.w3.org/2000/svg"
      width="24" height="24"
