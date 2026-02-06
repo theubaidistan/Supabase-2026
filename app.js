@@ -64,6 +64,7 @@ logoutButton.addEventListener("click", () => {
 });
 
 // init
+initAllThings(); // this will fetch first, render, then subscribe
 
 checkUserOnStartUp();
 
@@ -72,7 +73,6 @@ const myThings = {};
 const allThings = {};
 
 getAllIntialThings().then(() => listenToAllThings());
-initAllThings(); // this will fetch first, render, then subscribe
 
 supaClient.auth.onAuthStateChange((_event, session) => {
   if (session?.user) {
@@ -82,14 +82,55 @@ supaClient.auth.onAuthStateChange((_event, session) => {
   }
 });
 
-// function declarartions
-
+//* Function Declarartions
+// Fetch initial data AND subscribe to real-time updates
 async function initAllThings() {
-  const { data } = await supaClient.from("things").select();
+  // const { data } = await supaClient.from("things").select();
+  // data.forEach((thing) => (allThings[thing.id] = thing));
+  // renderAllThings();
+
+  // listenToAllThings(); // subscribe AFTER fetching initial data
+  // 1️⃣ Fetch existing things
+  const { data, error } = await supaClient.from("things").select();
+  if (error) {
+    console.error("Error fetching things:", error);
+    return;
+  }
+
   data.forEach((thing) => (allThings[thing.id] = thing));
   renderAllThings();
 
-  listenToAllThings(); // subscribe AFTER fetching initial data
+  // 2️⃣ Subscribe to real-time changes
+  supaClient
+    .channel("public:things")
+    // INSERT
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "things" },
+      (payload) => {
+        allThings[payload.new.id] = payload.new;
+        renderAllThings();
+      }
+    )
+    // UPDATE
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "things" },
+      (payload) => {
+        allThings[payload.new.id] = payload.new;
+        renderAllThings();
+      }
+    )
+    // DELETE
+    .on(
+      "postgres_changes",
+      { event: "DELETE", schema: "public", table: "things" },
+      (payload) => {
+        delete allThings[payload.old.id];
+        renderAllThings();
+      }
+    )
+    .subscribe();
 }
 
 async function checkUserOnStartUp() {
