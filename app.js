@@ -30,11 +30,33 @@ loginButton.addEventListener("click", () => {
 });
 
 createThing.addEventListener("click", async () => {
+  // const {
+  //   data: { user },
+  // } = await supaClient.auth.getUser();
+  // const thing = createRandomThing(user);
+  // await supaClient.from("things").insert([thing]);
+
   const {
     data: { user },
   } = await supaClient.auth.getUser();
+
   const thing = createRandomThing(user);
-  await supaClient.from("things").insert([thing]);
+
+  const { data, error } = await supaClient
+    .from("things")
+    .insert([thing])
+    .select(); // get the inserted row with id
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  // Optimistic UI update
+  myThings[data[0].id] = data[0];
+  allThings[data[0].id] = data[0];
+  renderMyThings();
+  renderAllThings();
 });
 
 logoutButton.addEventListener("click", () => {
