@@ -157,16 +157,43 @@ function handleAllThingsUpdate(update) {
 }
 
 function listenToAllThings() {
+  // supaClient
+  //   .channel("public:things")
+  //   .on(
+  //     "postgres_changes",
+  //     {
+  //       event: "*",
+  //       schema: "public",
+  //       table: "things",
+  //     },
+  //     handleAllThingsUpdate
+  //   )
+  //   .subscribe();
   supaClient
     .channel("public:things")
     .on(
       "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "things",
-      },
-      handleAllThingsUpdate
+      { event: "INSERT", schema: "public", table: "things" },
+      (payload) => {
+        allThings[payload.new.id] = payload.new;
+        renderAllThings();
+      }
+    )
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "things" },
+      (payload) => {
+        allThings[payload.new.id] = payload.new;
+        renderAllThings();
+      }
+    )
+    .on(
+      "postgres_changes",
+      { event: "DELETE", schema: "public", table: "things" },
+      (payload) => {
+        delete allThings[payload.old.id];
+        renderAllThings();
+      }
     )
     .subscribe();
 }
